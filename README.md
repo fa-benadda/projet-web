@@ -2,7 +2,7 @@
 Exchange Knowledge, Grow Together.🤝
 
  📝 What is this Project?
-This is a website for our university web programming module. 
+This is a web application for our university web programming module. 
 It is a barter system for skills:
 *"I teach you Coding, you teach me French."* No money, just knowledge.
 
