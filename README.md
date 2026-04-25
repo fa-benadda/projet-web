@@ -10,8 +10,8 @@ It is a barter system for skills:
 
  👥 The Team & Our Jobs
 
- 👑 mission 1: Project Manager
- Razane: In charge of organizing the project, making the structure, linking pages, and final assembly.
+ 👑 mission 1: Project Manager & README
+ fatima: In charge of organizing the project, making the structure, linking pages, and final assembly.
 
 🎨 mission 2: Front-End Developer
  Dhouha: Designed and coded the Login, Register, and Dashboard pages.
@@ -22,8 +22,8 @@ It is a barter system for skills:
  ⚙️ mission 4: Back-End Developer
  Ilyas: Developed the API, the registration system, and the "CRUD" logic for skills (creating, reading, updating, deleting skill entries).
 
- 🗄️ mission 5: Database & README
- Habiba: Setup the MongoDB Atlas database, organized the Collections (tables), wrote the final Report, and made this README.
+ 🗄️ mission 5: Database 
+ Habiba: Setup the MongoDB Atlas database, organized the Collections (tables), wrote the final Report
 
 ---
 
