@@ -36,6 +36,6 @@ It is a barter system for skills:
 
   Database Connection (For Back-End)
 This link is used by the application backend to store and read data:
- mongodb+srv://hbennicheinf_db_user:1gXJjslAQq7ltgil@cluster0.7pvw2kf.mongodb.net/SkillExchange_DB
+ https://ac-mraef7l-shard-00-02.7lgi76e.mongodb.net:27017/SkillExchange_DB?authSource=admin&replicaSet=atlas-vpsld9-shard-0&tls=true
  
  
