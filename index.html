@@ -1,13 +1,728 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 <head>
-<title>Skill Exchange Platform</title>
-<link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillExchange - تبادل المهارات</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #6c63ff;
+    --secondary: #ff6584;
+    --dark: #0f0e17;
+    --card: #1a1a2e;
+    --light: #fffffe;
+    --gray: #a7a9be;
+    --success: #2cb67d;
+    --border: rgba(108,99,255,0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--dark);
+    color: var(--light);
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 2rem;
+    background: rgba(15,14,23,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .nav-links { display: flex; gap: 1rem; }
+
+  .nav-btn {
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+
+  .nav-btn.outline {
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+  }
+
+  .nav-btn.outline:hover { background: var(--primary); color: white; }
+
+  .nav-btn.filled {
+    background: var(--primary);
+    color: white;
+  }
+
+  .nav-btn.filled:hover { background: #5a52d5; }
+
+  .nav-btn.danger {
+    background: transparent;
+    border: 1px solid var(--secondary);
+    color: var(--secondary);
+  }
+
+  .nav-btn.danger:hover { background: var(--secondary); color: white; }
+
+  /* PAGES */
+  .page { display: none; padding: 2rem; max-width: 1100px; margin: 0 auto; }
+  .page.active { display: block; animation: fadeIn 0.4s ease; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* AUTH FORMS */
+  .auth-container {
+    max-width: 450px;
+    margin: 3rem auto;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+
+  .auth-title {
+    font-size: 1.8rem;
+    font-weight: 900;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .auth-subtitle { color: var(--gray); margin-bottom: 2rem; font-size: 0.95rem; }
+
+  .form-group { margin-bottom: 1.2rem; }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--gray);
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .form-group input, .form-group textarea, .form-group select {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--light);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    outline: none;
+  }
+
+  .form-group input:focus, .form-group textarea:focus {
+    border-color: var(--primary);
+    background: rgba(108,99,255,0.08);
+  }
+
+  .form-group textarea { resize: vertical; min-height: 100px; }
+
+  .btn-primary {
+    width: 100%;
+    padding: 0.9rem;
+    background: linear-gradient(135deg, var(--primary), #8b83ff);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 0.5rem;
+  }
+
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(108,99,255,0.4); }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .auth-switch {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: var(--gray);
+    font-size: 0.9rem;
+  }
+
+  .auth-switch a { color: var(--primary); cursor: pointer; text-decoration: none; font-weight: 600; }
+  .auth-switch a:hover { text-decoration: underline; }
+
+  /* ALERT */
+  .alert {
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    display: none;
+  }
+
+  .alert.error { background: rgba(255,101,132,0.15); border: 1px solid rgba(255,101,132,0.3); color: #ff6584; }
+  .alert.success { background: rgba(44,182,125,0.15); border: 1px solid rgba(44,182,125,0.3); color: #2cb67d; }
+  .alert.show { display: block; }
+
+  /* SKILLS PAGE */
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .page-title { font-size: 2rem; font-weight: 900; }
+  .page-title span { color: var(--primary); }
+
+  .btn-add {
+    padding: 0.7rem 1.5rem;
+    background: linear-gradient(135deg, var(--primary), #8b83ff);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .btn-add:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(108,99,255,0.4); }
+
+  /* SKILLS GRID */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .skill-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skill-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+  }
+
+  .skill-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+    box-shadow: 0 15px 40px rgba(108,99,255,0.2);
+  }
+
+  .skill-category {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: rgba(108,99,255,0.15);
+    color: var(--primary);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+  }
+
+  .skill-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .skill-desc { color: var(--gray); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem; }
+
+  .skill-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .skill-owner { color: var(--gray); font-size: 0.85rem; }
+  .skill-owner span { color: var(--primary); font-weight: 600; }
+
+  .skill-actions { display: flex; gap: 0.5rem; }
+
+  .btn-edit, .btn-delete {
+    padding: 0.35rem 0.8rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+
+  .btn-edit { background: rgba(108,99,255,0.15); color: var(--primary); }
+  .btn-edit:hover { background: var(--primary); color: white; }
+
+  .btn-delete { background: rgba(255,101,132,0.15); color: var(--secondary); }
+  .btn-delete:hover { background: var(--secondary); color: white; }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(5px);
+    z-index: 200;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-overlay.show { display: flex; animation: fadeIn 0.3s ease; }
+
+  .modal {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 500px;
+    border: 1px solid var(--border);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+  }
+
+  .modal-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    color: var(--light);
+  }
+
+  .modal-buttons { display: flex; gap: 1rem; margin-top: 1rem; }
+
+  .btn-cancel {
+    flex: 1;
+    padding: 0.8rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--gray);
+    border-radius: 10px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-cancel:hover { border-color: var(--gray); color: var(--light); }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--gray);
+  }
+
+  .empty-state .icon { font-size: 4rem; margin-bottom: 1rem; }
+  .empty-state h3 { font-size: 1.3rem; margin-bottom: 0.5rem; color: var(--light); }
+
+  /* LOADING */
+  .loading {
+    display: flex;
+    justify-content: center;
+    padding: 3rem;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* WELCOME BANNER */
+  .welcome-banner {
+    background: linear-gradient(135deg, rgba(108,99,255,0.15), rgba(255,101,132,0.15));
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .welcome-text h2 { font-size: 1.3rem; font-weight: 700; }
+  .welcome-text p { color: var(--gray); font-size: 0.9rem; margin-top: 0.3rem; }
+
+  @media (max-width: 600px) {
+    nav { padding: 1rem; }
+    .page { padding: 1rem; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .welcome-banner { flex-direction: column; gap: 1rem; text-align: center; }
+  }
+</style>
 </head>
 <body>
- <h1>Welcome to Skill Exchange</h1>
- <p>A platform where students exchange skills.</p>
- <a href="register.html">Register</a>
- <a href="login.html">Login</a>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">⚡ SkillExchange</div>
+  <div class="nav-links" id="navLinks">
+    <button class="nav-btn outline" onclick="showPage('login')">تسجيل الدخول</button>
+    <button class="nav-btn filled" onclick="showPage('register')">إنشاء حساب</button>
+  </div>
+</nav>
+
+<!-- LOGIN PAGE -->
+<div class="page active" id="page-login">
+  <div class="auth-container">
+    <div class="auth-title">مرحباً بعودتك 👋</div>
+    <div class="auth-subtitle">سجل دخولك للوصول إلى مهاراتك</div>
+    <div class="alert error" id="login-error"></div>
+    <div class="alert success" id="login-success"></div>
+    <div class="form-group">
+      <label>البريد الإلكتروني</label>
+      <input type="email" id="login-email" placeholder="example@email.com">
+    </div>
+    <div class="form-group">
+      <label>كلمة المرور</label>
+      <input type="password" id="login-password" placeholder="••••••••">
+    </div>
+    <button class="btn-primary" onclick="login()" id="login-btn">تسجيل الدخول</button>
+    <div class="auth-switch">
+      ليس لديك حساب؟ <a onclick="showPage('register')">إنشاء حساب جديد</a>
+    </div>
+  </div>
+</div>
+
+<!-- REGISTER PAGE -->
+<div class="page" id="page-register">
+  <div class="auth-container">
+    <div class="auth-title">إنشاء حساب جديد ✨</div>
+    <div class="auth-subtitle">انضم إلى مجتمع تبادل المهارات</div>
+    <div class="alert error" id="register-error"></div>
+    <div class="alert success" id="register-success"></div>
+    <div class="form-group">
+      <label>الاسم الكامل</label>
+      <input type="text" id="register-name" placeholder="محمد أحمد">
+    </div>
+    <div class="form-group">
+      <label>البريد الإلكتروني</label>
+      <input type="email" id="register-email" placeholder="example@email.com">
+    </div>
+    <div class="form-group">
+      <label>كلمة المرور</label>
+      <input type="password" id="register-password" placeholder="••••••••">
+    </div>
+    <button class="btn-primary" onclick="register()" id="register-btn">إنشاء الحساب</button>
+    <div class="auth-switch">
+      لديك حساب بالفعل؟ <a onclick="showPage('login')">تسجيل الدخول</a>
+    </div>
+  </div>
+</div>
+
+<!-- SKILLS PAGE -->
+<div class="page" id="page-skills">
+  <div class="welcome-banner" id="welcomeBanner">
+    <div class="welcome-text">
+      <h2>مرحباً، <span id="userName"></span> 👋</h2>
+      <p>استعرض المهارات المتاحة أو أضف مهارتك الخاصة</p>
+    </div>
+    <button class="btn-add" onclick="openAddModal()">+ إضافة مهارة</button>
+  </div>
+  <div class="page-header">
+    <div class="page-title">المهارات <span>المتاحة</span></div>
+  </div>
+  <div id="skillsContainer"></div>
+</div>
+
+<!-- ADD/EDIT MODAL -->
+<div class="modal-overlay" id="skillModal">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">إضافة مهارة جديدة</div>
+    <div class="alert error" id="modal-error"></div>
+    <div class="form-group">
+      <label>عنوان المهارة</label>
+      <input type="text" id="skill-title" placeholder="مثال: تصميم واجهات">
+    </div>
+    <div class="form-group">
+      <label>الوصف</label>
+      <textarea id="skill-desc" placeholder="اكتب وصفاً تفصيلياً للمهارة..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>التصنيف</label>
+      <input type="text" id="skill-category" placeholder="مثال: برمجة، تصميم، لغات...">
+    </div>
+    <div class="modal-buttons">
+      <button class="btn-cancel" onclick="closeModal()">إلغاء</button>
+      <button class="btn-primary" onclick="saveSkill()" id="saveBtn" style="margin-top:0">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API = "https://projet-web-j714.onrender.com";
+  let token = localStorage.getItem('token');
+  let currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+  let editingSkillId = null;
+
+  // INIT
+  if (token && currentUser) {
+    showPage('skills');
+    updateNav(true);
+    document.getElementById('userName').textContent = currentUser.name;
+    loadSkills();
+  }
+
+  function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+  }
+
+  function updateNav(loggedIn) {
+    const nav = document.getElementById('navLinks');
+    if (loggedIn) {
+      nav.innerHTML = `<button class="nav-btn danger" onclick="logout()">تسجيل الخروج</button>`;
+    } else {
+      nav.innerHTML = `
+        <button class="nav-btn outline" onclick="showPage('login')">تسجيل الدخول</button>
+        <button class="nav-btn filled" onclick="showPage('register')">إنشاء حساب</button>
+      `;
+    }
+  }
+
+  function showAlert(id, msg, type) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.className = `alert ${type} show`;
+    setTimeout(() => el.classList.remove('show'), 4000);
+  }
+
+  // REGISTER
+  async function register() {
+    const name = document.getElementById('register-name').value.trim();
+    const email = document.getElementById('register-email').value.trim();
+    const password = document.getElementById('register-password').value;
+
+    if (!name || !email || !password) return showAlert('register-error', 'يرجى ملء جميع الحقول', 'error');
+
+    const btn = document.getElementById('register-btn');
+    btn.disabled = true;
+    btn.textContent = 'جاري الإنشاء...';
+
+    try {
+      const res = await fetch(`${API}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'حدث خطأ');
+
+      showAlert('register-success', 'تم إنشاء الحساب بنجاح! ✅', 'success');
+      setTimeout(() => { showPage('login'); }, 1500);
+    } catch (err) {
+      showAlert('register-error', err.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'إنشاء الحساب';
+    }
+  }
+
+  // LOGIN
+  async function login() {
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+
+    if (!email || !password) return showAlert('login-error', 'يرجى ملء جميع الحقول', 'error');
+
+    const btn = document.getElementById('login-btn');
+    btn.disabled = true;
+    btn.textContent = 'جاري الدخول...';
+
+    try {
+      const res = await fetch(`${API}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'بيانات خاطئة');
+
+      token = data.token;
+      currentUser = data.user;
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(currentUser));
+
+      updateNav(true);
+      document.getElementById('userName').textContent = currentUser.name;
+      showPage('skills');
+      loadSkills();
+    } catch (err) {
+      showAlert('login-error', err.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'تسجيل الدخول';
+    }
+  }
+
+  // LOGOUT
+  function logout() {
+    token = null;
+    currentUser = null;
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    updateNav(false);
+    showPage('login');
+  }
+
+  // LOAD SKILLS
+  async function loadSkills() {
+    const container = document.getElementById('skillsContainer');
+    container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+    try {
+      const res = await fetch(`${API}/api/skills`);
+      const skills = await res.json();
+
+      if (skills.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">🎯</div>
+            <h3>لا توجد مهارات بعد</h3>
+            <p>كن أول من يضيف مهارة!</p>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = `<div class="skills-grid">${skills.map(skill => `
+        <div class="skill-card">
+          <div class="skill-category">${skill.category || 'عام'}</div>
+          <div class="skill-title">${skill.title}</div>
+          <div class="skill-desc">${skill.description}</div>
+          <div class="skill-footer">
+            <div class="skill-owner">بواسطة: <span>${skill.owner?.name || 'مجهول'}</span></div>
+            ${currentUser && skill.owner?._id === currentUser.id ? `
+              <div class="skill-actions">
+                <button class="btn-edit" onclick="openEditModal('${skill._id}', '${skill.title}', '${skill.description}', '${skill.category || ''}')">تعديل</button>
+                <button class="btn-delete" onclick="deleteSkill('${skill._id}')">حذف</button>
+              </div>` : ''}
+          </div>
+        </div>`).join('')}</div>`;
+    } catch (err) {
+      container.innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><h3>خطأ في تحميل المهارات</h3><p>${err.message}</p></div>`;
+    }
+  }
+
+  // MODAL
+  function openAddModal() {
+    editingSkillId = null;
+    document.getElementById('modalTitle').textContent = 'إضافة مهارة جديدة';
+    document.getElementById('skill-title').value = '';
+    document.getElementById('skill-desc').value = '';
+    document.getElementById('skill-category').value = '';
+    document.getElementById('saveBtn').textContent = 'إضافة';
+    document.getElementById('skillModal').classList.add('show');
+  }
+
+  function openEditModal(id, title, desc, category) {
+    editingSkillId = id;
+    document.getElementById('modalTitle').textContent = 'تعديل المهارة';
+    document.getElementById('skill-title').value = title;
+    document.getElementById('skill-desc').value = desc;
+    document.getElementById('skill-category').value = category;
+    document.getElementById('saveBtn').textContent = 'حفظ التعديل';
+    document.getElementById('skillModal').classList.add('show');
+  }
+
+  function closeModal() {
+    document.getElementById('skillModal').classList.remove('show');
+  }
+
+  // SAVE SKILL
+  async function saveSkill() {
+    const title = document.getElementById('skill-title').value.trim();
+    const description = document.getElementById('skill-desc').value.trim();
+    const category = document.getElementById('skill-category').value.trim();
+
+    if (!title || !description) return showAlert('modal-error', 'يرجى ملء العنوان والوصف', 'error');
+
+    const btn = document.getElementById('saveBtn');
+    btn.disabled = true;
+
+    try {
+      const url = editingSkillId ? `${API}/api/skills/${editingSkillId}` : `${API}/api/skills`;
+      const method = editingSkillId ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ title, description, category })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'حدث خطأ');
+
+      closeModal();
+      loadSkills();
+    } catch (err) {
+      showAlert('modal-error', err.message, 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  // DELETE SKILL
+  async function deleteSkill(id) {
+    if (!confirm('هل أنت متأكد من حذف هذه المهارة؟')) return;
+
+    try {
+      const res = await fetch(`${API}/api/skills/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (!res.ok) throw new Error('فشل الحذف');
+      loadSkills();
+    } catch (err) {
+      alert(err.message);
+    }
+  }
+
+  // Close modal on overlay click
+  document.getElementById('skillModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+</script>
 </body>
 </html>
