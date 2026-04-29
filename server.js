@@ -15,3 +15,8 @@ app.use('/api/skills', require('./routes/skills'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+setInterval(() => {
+  fetch('https://projet-web-j714.onrender.com')
+    .then(() => console.log('Server kept alive'))
+    .catch(() => {});
+}, 840000);
