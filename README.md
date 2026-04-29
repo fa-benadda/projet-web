@@ -1,33 +1,33 @@
- # 🌐 Skill Exchange Platform
-Exchange Knowledge, Grow Together.🤝
+ Skill Exchange Platform
+Exchange Knowledge, Grow Together.
 
- 📝 What is this Project?
+ What is this Project?
 This is a web application for our university web programming module. 
 It is a barter system for skills:
 *"I teach you python, you teach me java."* No money, just knowledge.
 
 ---
 
- 👥 The Team & Our Jobs
+ The Team & Our Jobs
 
- 👑 mission 1: Project Manager & README
+  mission 1: Project Manager 
  fatima: In charge of organizing the project, making the structure, linking pages, and final assembly.
 
-🎨 mission 2: Front-End Developer
+ mission 2: Front-End Developer
  Dhouha: Designed and coded the Login, Register, and Dashboard pages.
 
-✨ mission 3: CSS & Responsive Design
+  mission 3: CSS & Responsive Design
  Wafaa: Handled the styling (colors, layout) and made sure the website looks good on phones (Responsive).
 
- ⚙️ mission 4: Back-End Developer
+  mission 4: Back-End Developer
  Ilyas: Developed the API, the registration system, and the "CRUD" logic for skills (creating, reading, updating, deleting skill entries).
 
- 🗄️ mission 5: Database 
+  mission 5: Database & README
  Habiba: Setup the MongoDB Atlas database, organized the Collections (tables), wrote the final Report
 
 ---
 
-🛠 Tech Stack (Tools)
+  Tech Stack (Tools)
 * Front-End: HTML, CSS, JavaScript.
 * Back-End: Node.js (with Express).
 * Database: MongoDB Atlas (Live Cloud Data).
